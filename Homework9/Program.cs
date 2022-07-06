@@ -19,7 +19,7 @@ namespace Homework9
 
         //token: "5415590144:AAF00dfQJhKefmgRzL3sAaeepB_JYAcjCsk"
         static TelegramBotClient botClient;
-        static string path = "UserData";
+        static string path = @"UserData";
         static async Task Main(string[] args)
         {
             string token = "5415590144:AAF00dfQJhKefmgRzL3sAaeepB_JYAcjCsk";
@@ -60,32 +60,129 @@ namespace Homework9
                 var messageType = message.Type;
                 var chatId = message.Chat.Id;
 
+                Message sentMessage;
+
+                int fileNums = Directory.GetFiles(path).Length;
+
                 Console.WriteLine($"Received a '{messageText}' message in chat {chatId}. Include {messageType}");
 
-                switch (messageType)
+                //switch (messageType)
+                //{
+                //    case Telegram.Bot.Types.Enums.MessageType.Text:
+                //        await GetTextMessage(messageText, chatId, cancellationToken);
+                //        break;
+                //    case Telegram.Bot.Types.Enums.MessageType.Photo:
+                //        var fileID = update.Message.Photo[0].FileId;
+                //        var fileInfo = await botClient.GetFileAsync(fileID);
+                //        var filePath = fileInfo.FilePath;
+
+                //        string destinationFilePath = $@"../net5.0/{path}";
+                //        await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
+                //        await botClient.DownloadFileAsync(
+                //            filePath: filePath,
+                //            destination: fileStream);
+                //        break;
+                //    case Telegram.Bot.Types.Enums.MessageType.Video:
+
+                //        break;
+
+                //    case Telegram.Bot.Types.Enums.MessageType.Document:
+
+                //        break;
+                //    case Telegram.Bot.Types.Enums.MessageType.Audio:
+
+                //        break;
+                //    default:
+                //        Message sentMessage = await botClient.SendTextMessageAsync(
+                //            chatId: chatId,
+                //            text: "Простите, я не знаю что вы от меня хотите",
+                //            cancellationToken: cancellationToken);
+                //        break;
+                //}
+
+                if (messageType == Telegram.Bot.Types.Enums.MessageType.Text)
                 {
-                    case Telegram.Bot.Types.Enums.MessageType.Text:
-                        await GetTextMessage(messageText, chatId, cancellationToken);
-                        break;
-                    case Telegram.Bot.Types.Enums.MessageType.Photo:
+                    await GetTextMessage(messageText, chatId, cancellationToken);
+                }
+                else if (messageType == Telegram.Bot.Types.Enums.MessageType.Photo)
+                {
+                    var fileID = update.Message.Photo[0].FileId;
+                    var fileInfo = await botClient.GetFileAsync(fileID);
+                    var filePath = fileInfo.FilePath;
 
-                        break;
-                    case Telegram.Bot.Types.Enums.MessageType.Video:
+                    string destinationFilePath = $"{path}/{fileNums + 1}.png";
+                    await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
+                    await botClient.DownloadFileAsync(
+                        filePath: filePath,
+                        destination: fileStream);
 
-                        break;
+                    fileNums++;
 
-                    case Telegram.Bot.Types.Enums.MessageType.Document:
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Выполнено",
+                           cancellationToken: cancellationToken);
+                }
+                else if (messageType == Telegram.Bot.Types.Enums.MessageType.Video)
+                {
+                    var fileID = update.Message.Video.FileId;
+                    var fileInfo = await botClient.GetFileAsync(fileID);
+                    var filePath = fileInfo.FilePath;
 
-                        break;
-                    case Telegram.Bot.Types.Enums.MessageType.Audio:
+                    string destinationFilePath = $"{path}/{fileNums}.mp4";
+                    await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
+                    await botClient.DownloadFileAsync(
+                        filePath: filePath,
+                        destination: fileStream);
 
-                        break;
-                    default:
-                        Message sentMessage = await botClient.SendTextMessageAsync(
-                            chatId: chatId,
-                            text: "Простите, я не знаю что вы от меня хотите",
-                            cancellationToken: cancellationToken);
-                        break;
+                    fileNums++;
+
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Выполнено",
+                           cancellationToken: cancellationToken);
+                }
+                else if (messageType == Telegram.Bot.Types.Enums.MessageType.Document)
+                {
+                    var fileID = update.Message.Document.FileId;
+                    var fileInfo = await botClient.GetFileAsync(fileID);
+                    var filePath = fileInfo.FilePath;
+
+                    string destinationFilePath = $"{path}/{fileNums + 1}.txt";
+                    await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
+                    await botClient.DownloadFileAsync(
+                        filePath: filePath,
+                        destination: fileStream);
+
+                    fileNums++;
+
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Выполнено",
+                           cancellationToken: cancellationToken);
+                }
+                else if (messageType == Telegram.Bot.Types.Enums.MessageType.Audio)
+                {
+                    var fileID = update.Message.Audio.FileId;
+                    var fileInfo = await botClient.GetFileAsync(fileID);
+                    var filePath = fileInfo.FilePath;
+
+                    string destinationFilePath = $"{path}/{fileNums + 1}.mp3";
+                    await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
+                    await botClient.DownloadFileAsync(
+                        filePath: filePath,
+                        destination: fileStream);
+
+                    fileNums++;
+
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Выполнено",
+                           cancellationToken: cancellationToken);
+                }
+                else
+                {
+
                 }
             }
 
@@ -113,7 +210,7 @@ namespace Homework9
                 string[] splitedArr = messageText.Split(' ');
                 try
                 {
-                    await using Stream stream = System.IO.File.OpenRead(path + splitedArr[1]);
+                    await using Stream stream = System.IO.File.OpenRead($@"../net5.0/{path}/{splitedArr[1]}");
                     sentMessage = await botClient.SendDocumentAsync(
                         chatId: chatId,
                         document: new InputOnlineFile(content: stream, fileName: splitedArr[1]),
@@ -123,43 +220,111 @@ namespace Homework9
                 {
                     sentMessage = await botClient.SendTextMessageAsync(
                            chatId: chatId,
-                           text: "Файл не найден!",
+                           text: "Файл не найден или пуст!",
                            cancellationToken: cancellationToken);
                 }
 
                 return;
             }
+            Random rnd = new Random();
+            string[] textArr = messageText.Split(' ');
+            string otherText = "";
+            for (int i = 1; i < textArr.Length; i++)
+                otherText += $" {textArr[i]}";
 
-            switch (messageText.ToLower())
+            switch (textArr[0].ToLower())
             {
                 case "/start":
-
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Привет! Вот что я умею:\n" +
+                                 "help или помощь - напоминю что я умею\n" +
+                                 "8ball или шар [текст] - потрясу волшебный шар\n" +
+                                 "chance или шанс [текст] - шанс на что угодно\n" +
+                                 "files или файлы - список файлов, доступных для скачивания\n" +
+                                 "download или скач [имя файла] - скачать файл, если такой, конечно, существует\n" +
+                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже. " +
+                                 "Простите, но пока что умею сохранять файлы только в форматах .png, .mp3, .mp4 и .txt =(",
+                           cancellationToken: cancellationToken);
                     break;
 
                 case "help":
                 case "помощь":
-
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Вот что я умею:\n" +
+                                 "help или помощь - напоминю что я умею\n" +
+                                 "8ball или шар [текст] - потрясу волшебный шар\n" +
+                                 "chance или шанс [текст] - шанс на что угодно\n" +
+                                 "files или файлы - список файлов, доступных для скачивания\n" +
+                                 "download или скач [имя файла] - скачать файл, если такой, конечно, существует\n" +
+                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже" +
+                                 "Простите, но пока что умею сохранять файлы только в форматах .png, .mp3, .mp4 и .txt =(",
+                           cancellationToken: cancellationToken);
                     break;
 
                 case "8ball":
                 case "шар":
-
+                    string[] answers = {"Бесспорно",
+                                        "Предрешено",
+                                        "Никаких сомнений",
+                                        "Определённо да",
+                                        "Можешь быть уверен в этом",
+                                        "Мне кажется — «да»",
+                                        "Вероятнее всего",
+                                        "Хорошие перспективы",
+                                        "Знаки говорят — «да»",
+                                        "Да",
+                                        "Пока не ясно, попробуй снова",
+                                        "Спроси позже",
+                                        "Лучше не рассказывать",
+                                        "Сейчас нельзя предсказать",
+                                        "Сконцентрируйся и спроси опять",
+                                        "Даже не думай",
+                                        "Мой ответ — «нет»",
+                                        "По моим данным — «нет»",
+                                        "Перспективы не очень хорошие",
+                                        "Весьма сомнительно"};
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: answers[rnd.Next(0, 19)],
+                           cancellationToken: cancellationToken);
                     break;
 
                 case "chance":
                 case "шанс":
-
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: $"Ваш шанс на{otherText}: {rnd.Next(0, 100)}%",
+                           cancellationToken: cancellationToken);
                     break;
 
                 case "files": 
                 case "файлы":
+                    string files = "";
+                    string[] filesArr = Directory.GetFiles(path + "/");
 
+                    foreach (string s in filesArr)
+                    {
+                        
+                        files += s.Remove(0, path.Length + 1) + "\n";
+                    }
+                        
+
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: $"Список файлов доступных для скачивания:\n" + files,
+                           cancellationToken: cancellationToken);
                     break;
 
                 default:
-
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: $"Простите, но когда-то я научусь вас понимать(((",
+                           cancellationToken: cancellationToken);
                     break;
             }
+            otherText = "";
             return;
         }
 

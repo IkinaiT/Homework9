@@ -66,40 +66,6 @@ namespace Homework9
 
                 Console.WriteLine($"Received a '{messageText}' message in chat {chatId}. Include {messageType}");
 
-                //switch (messageType)
-                //{
-                //    case Telegram.Bot.Types.Enums.MessageType.Text:
-                //        await GetTextMessage(messageText, chatId, cancellationToken);
-                //        break;
-                //    case Telegram.Bot.Types.Enums.MessageType.Photo:
-                //        var fileID = update.Message.Photo[0].FileId;
-                //        var fileInfo = await botClient.GetFileAsync(fileID);
-                //        var filePath = fileInfo.FilePath;
-
-                //        string destinationFilePath = $@"../net5.0/{path}";
-                //        await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
-                //        await botClient.DownloadFileAsync(
-                //            filePath: filePath,
-                //            destination: fileStream);
-                //        break;
-                //    case Telegram.Bot.Types.Enums.MessageType.Video:
-
-                //        break;
-
-                //    case Telegram.Bot.Types.Enums.MessageType.Document:
-
-                //        break;
-                //    case Telegram.Bot.Types.Enums.MessageType.Audio:
-
-                //        break;
-                //    default:
-                //        Message sentMessage = await botClient.SendTextMessageAsync(
-                //            chatId: chatId,
-                //            text: "Простите, я не знаю что вы от меня хотите",
-                //            cancellationToken: cancellationToken);
-                //        break;
-                //}
-
                 if (messageType == Telegram.Bot.Types.Enums.MessageType.Text)
                 {
                     await GetTextMessage(messageText, chatId, cancellationToken);
@@ -110,7 +76,11 @@ namespace Homework9
                     var fileInfo = await botClient.GetFileAsync(fileID);
                     var filePath = fileInfo.FilePath;
 
-                    string destinationFilePath = $"{path}/{fileNums + 1}.png";
+                    string[] fileExtension = filePath.Split('/')[1].Split('.');
+
+                    
+
+                    string destinationFilePath = $"{path}/{fileExtension[0]}.{fileExtension[1]}";
                     await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
                     await botClient.DownloadFileAsync(
                         filePath: filePath,
@@ -129,7 +99,11 @@ namespace Homework9
                     var fileInfo = await botClient.GetFileAsync(fileID);
                     var filePath = fileInfo.FilePath;
 
-                    string destinationFilePath = $"{path}/{fileNums}.mp4";
+                    string[] fileExtension = filePath.Split('/')[1].Split('.');
+
+
+
+                    string destinationFilePath = $"{path}/{fileExtension[0]}.{fileExtension[1]}";
                     await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
                     await botClient.DownloadFileAsync(
                         filePath: filePath,
@@ -148,7 +122,11 @@ namespace Homework9
                     var fileInfo = await botClient.GetFileAsync(fileID);
                     var filePath = fileInfo.FilePath;
 
-                    string destinationFilePath = $"{path}/{fileNums + 1}.txt";
+                    string[] fileExtension = filePath.Split('/')[1].Split('.');
+
+
+
+                    string destinationFilePath = $"{path}/{fileExtension[0]}.{fileExtension[1]}";
                     await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
                     await botClient.DownloadFileAsync(
                         filePath: filePath,
@@ -167,7 +145,11 @@ namespace Homework9
                     var fileInfo = await botClient.GetFileAsync(fileID);
                     var filePath = fileInfo.FilePath;
 
-                    string destinationFilePath = $"{path}/{fileNums + 1}.mp3";
+                    string[] fileExtension = filePath.Split('/')[1].Split('.');
+
+
+
+                    string destinationFilePath = $"{path}/{fileExtension[0]}.{fileExtension[1]}";
                     await using FileStream fileStream = System.IO.File.OpenWrite(destinationFilePath);
                     await botClient.DownloadFileAsync(
                         filePath: filePath,
@@ -182,7 +164,10 @@ namespace Homework9
                 }
                 else
                 {
-
+                    sentMessage = await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Простите, я еще не умею работать с файлами данного типа(((",
+                           cancellationToken: cancellationToken);
                 }
             }
 
@@ -243,8 +228,7 @@ namespace Homework9
                                  "chance или шанс [текст] - шанс на что угодно\n" +
                                  "files или файлы - список файлов, доступных для скачивания\n" +
                                  "download или скач [имя файла] - скачать файл, если такой, конечно, существует\n" +
-                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже. " +
-                                 "Простите, но пока что умею сохранять файлы только в форматах .png, .mp3, .mp4 и .txt =(",
+                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже. ",
                            cancellationToken: cancellationToken);
                     break;
 
@@ -258,8 +242,7 @@ namespace Homework9
                                  "chance или шанс [текст] - шанс на что угодно\n" +
                                  "files или файлы - список файлов, доступных для скачивания\n" +
                                  "download или скач [имя файла] - скачать файл, если такой, конечно, существует\n" +
-                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже" +
-                                 "Простите, но пока что умею сохранять файлы только в форматах .png, .mp3, .mp4 и .txt =(",
+                                 "Также можете отправить файлы и я их сохраню чтобы Вы могли их скачать позже",
                            cancellationToken: cancellationToken);
                     break;
 
@@ -325,30 +308,6 @@ namespace Homework9
                     break;
             }
             otherText = "";
-            return;
-        }
-
-        static async Task GetPhotosMessage()
-        {
-
-            return;
-        }
-
-        static async Task GetVideoMessage()
-        {
-
-            return;
-        }
-
-        static async Task GetDocumentMessage()
-        {
-
-            return;
-        }
-
-        static async Task GetAudioMessage()
-        {
-
             return;
         }
     }
